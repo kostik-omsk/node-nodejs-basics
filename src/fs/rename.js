@@ -1,20 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { getDirname, FSError, isExists } from '../helpers/index.js';
 
+const __dirname = getDirname(import.meta.url);
 const source = path.join(__dirname, 'files');
-
-const isExists = async (path) => {
-  try {
-    await fs.access(path);
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
 
 const rename = async () => {
   const file = path.join(source, 'wrongFilename.txt');
@@ -29,7 +19,7 @@ const rename = async () => {
     }
     await fs.rename(file, fileRename);
   } catch (error) {
-    console.log('Error:', error.message);
+    throw new FSError(error.message);
   }
 };
 
