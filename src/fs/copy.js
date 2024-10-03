@@ -1,26 +1,18 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { isExists } from '../helpers/isExists.js';
+import { FSError } from '../helpers/errors.js';
+import { getDirname } from '../helpers/getDirname.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = getDirname(import.meta.url);
 const source = path.join(__dirname, 'files');
 const destination = path.join(__dirname, 'files_copy');
 
-const isExists = async (path) => {
-  try {
-    await fs.access(path);
-    return true;
-  } catch (error) {
-    return false;
-  }
-};
 const copyDirectory = async (src, dest) => {
   try {
     await fs.mkdir(dest, { recursive: true });
 
     const entries = await fs.readdir(src, { withFileTypes: true });
-    console.log('Entries:', entries);
 
     const promises = entries.map(async (entry) => {
       const sourcePath = path.join(src, entry.name);
@@ -35,7 +27,7 @@ const copyDirectory = async (src, dest) => {
 
     await Promise.all(promises);
   } catch (error) {
-    console.log('Error in copying directory:', error.message);
+    throw new FSError(error.message);
   }
 };
 
@@ -50,7 +42,7 @@ const copy = async () => {
 
     await copyDirectory(source, destination);
   } catch (error) {
-    console.log('Error:', error.message);
+    throw new FSError(error.message);
   }
 };
 
