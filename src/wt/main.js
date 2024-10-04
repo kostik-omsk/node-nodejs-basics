@@ -3,12 +3,11 @@ import { cpus } from 'os';
 
 const workerFile = new URL('./worker.js', import.meta.url);
 const cpu = cpus();
-// const cpu = Array.from({ length: 4 }); // you can set the number of default threads
 
 const performCalculations = async () => {
   let number = 10;
 
-  const arrWorkers = await Promise.allSettled(
+  const workerResults = await Promise.allSettled(
     cpu.map(
       (_, i) =>
         new Promise((resolve, reject) => {
@@ -19,7 +18,7 @@ const performCalculations = async () => {
     ),
   );
 
-  const arrResults = arrWorkers.map(({ status, value }) => {
+  const arrResults = workerResults.map(({ status, value }) => {
     return {
       status: status === 'fulfilled' ? 'resolved' : 'error',
       data: status === 'fulfilled' ? value : null,
