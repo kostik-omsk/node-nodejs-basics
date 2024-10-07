@@ -1,6 +1,5 @@
 import fs from 'fs/promises';
 import path from 'path';
-
 import { getDirname, FSError, isExists } from '../helpers/index.js';
 
 const __dirname = getDirname(import.meta.url);
@@ -14,7 +13,7 @@ const rename = async () => {
     const isFileExists = await isExists(file);
     const isFileRenameExists = await isExists(fileRename);
 
-    if (!isFileExists && isFileRenameExists) {
+    if (!isFileExists || isFileRenameExists) {
       throw new Error('FS operation failed');
     }
     await fs.rename(file, fileRename);
