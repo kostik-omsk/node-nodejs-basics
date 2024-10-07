@@ -5,11 +5,12 @@ import { getDirname, FSError } from '../helpers/index.js';
 const __dirname = getDirname(import.meta.url);
 
 const list = async () => {
+  const pathFile = path.join(__dirname, 'files');
   try {
-    const files = await fs.readdir(path.join(__dirname, 'files'));
-    files.forEach((file) => console.log(file));
+    const arrFiles = await fs.readdir(pathFile);
+    console.log(arrFiles);
   } catch (error) {
-    throw new FSError(error.message);
+    throw new FSError();
   }
 };
 
